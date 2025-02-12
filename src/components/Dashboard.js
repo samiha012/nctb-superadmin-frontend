@@ -299,7 +299,6 @@ const Dashboard = () => {
                   <thead className="text-xs text-gray-700 uppercase bg-gray-50">
                     <tr>
                       <th scope="col" className="px-4 py-3">Email</th>
-                      <th scope="col" className="px-4 py-3">Branch</th>
                       <th scope="col" className="px-4 py-3">Created At</th>
                       <th scope="col" className="px-4 py-3">Action</th>
                     </tr>
@@ -308,7 +307,6 @@ const Dashboard = () => {
                     {managers.map((item, index) => (
                       <tr key={index} className="bg-white border-b">
                         <td className="px-4 py-3">{item.email}</td>
-                        <td className="px-4 py-3">{item.branch.text}</td>
                         <td className="px-4 py-3">{getRelativeTime(new Date(item.createdAt).getTime())}</td>
                         <td className="px-4 py-3"><button onClick={e => {
                           setDeleteModalOpen(true)
@@ -398,29 +396,10 @@ const Dashboard = () => {
                   <label for="price" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Password</label>
                   <input type="text" value={pass} onChange={e => setPass(e.target.value)} className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-green-600 focus:border-green-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-green-500 dark:focus:border-green-500" placeholder="Password" required />
                 </div>
-                <div className="col-span-2 sm:col-span-1">
-                  <label for="category" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Branch</label>
-                  <select id="category" required value={branchData.text}
-                    onChange={e => {
-                      const selectedBranch = branchData.find(branch => branch.id === e.target.value);
-                      setBranch(selectedBranch);
-                    }}
-                    className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-green-500 focus:border-green-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-green-500 dark:focus:border-green-500">
-                    <option selected="">Select branch</option>
-
-                    {
-                      branchData && branchData.map(branch => {
-                        return (
-                          <option key={branch.id} value={branch.id}>{branch.text}</option>
-                        )
-                      })
-                    }
-                  </select>
-                </div>
               </div>
               <button type="submit" onClick={handleSubmit} className="text-white inline-flex items-center bg-green-700 hover:bg-green-800 focus:ring-4 focus:outline-none focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800">
                 <svg className="me-1 -ms-1 w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z" clip-rule="evenodd"></path></svg>
-                Add new manager
+                Add new user
               </button>
             </div>
           </div>
