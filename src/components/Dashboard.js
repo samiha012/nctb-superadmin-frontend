@@ -305,7 +305,8 @@ const Dashboard = () => {
                         <td className="px-4 py-3">{item.medium}</td>
                         <td className="px-4 py-3">{item.version}</td>
                         <td className="px-4 py-3">{item.bookName}</td>
-                        <td className="px-4 py-3 flex items-center space-x-2"><button onClick={e => {
+                        <td className="px-4 py-3 flex items-center space-x-2">
+                          <button onClick={e => {
                           setExamDeleteModalOpen(true);
                           // setExamName(item.exam);
                           // setDate(item.date);
