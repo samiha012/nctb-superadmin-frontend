@@ -29,10 +29,39 @@ const Dashboard = () => {
   const [version, setVersion] = useState('');
   const [bookName, setBookName] = useState('');
 
+  const [years, setYears] = useState([]);
+  const [classeNames, setClassNames] = useState([]);
+  const [mediums, setMediums] = useState([]);
+  const [versions, setVersions] = useState([]);
+
 
   const openModal = () => {
     setModalOpen(true);
   };
+
+  useEffect(() => {
+    const fetchDropdownValues = async () => {
+      try {
+        const [yearRes, classRes, mediumRes, versionRes] = await Promise.all([
+          fetch(`${API_URL}/year`).then(res => res.json()),
+          fetch(`${API_URL}/class`).then(res => res.json()),
+          fetch(`${API_URL}/medium`).then(res => res.json()),
+          fetch(`${API_URL}/version`).then(res => res.json())
+        ]);
+
+        setYears(yearRes);
+        setClassNames(classRes);
+        setMediums(mediumRes);
+        setVersions(versionRes);
+      } catch (error) {
+        console.error('Error fetching dropdown values:', error);
+      }
+    };
+
+    if (examModalOpen) {
+      fetchDropdownValues();
+    }
+  }, [examModalOpen]);
 
   const createBook = () => {
     if (year !== '' && className !== '' && medium !== '' && version !== '' && bookName !== '') {
@@ -379,63 +408,64 @@ const Dashboard = () => {
 
       {/* Add Book Modal */}
       <div className={`fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full ${examModalOpen ? '' : 'hidden'}`}>
-        <div className="flex relative m-auto justify-center self-center p-4 w-full max-w-lg max-h-full">
-
-          <div className="relative bg-white rounded-lg shadow dark:bg-gray-700 w-full">
-
-            <div className="flex items-center justify-between p-4 md:p-5 border-b rounded-t dark:border-gray-600">
-              <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
-                Create New Book
-              </h3>
-              <button type="button" onClick={() => setExamModalOpen(false)} className="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white" data-modal-toggle="crud-modal">
-                <svg className="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
-                  <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6" />
-                </svg>
-                <span className="sr-only">Close</span>
-              </button>
-            </div>
-            <div className="p-4 md:p-5">
-              <div className="grid gap-4 mb-4 grid-cols-2">
-                <div className="col-span-2">
-                  <label for="name" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Year</label>
-                  <input value={year} onChange={e => setYear(e.target.value)} type="text" className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-green-600 focus:border-green-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-green-500 dark:focus:border-green-500" placeholder="2025" required />
-                </div>
-                <div className="col-span-2">
-                  <label for="price" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Class</label>
-                  <input type="text" value={className} onChange={e => setClassName(e.target.value)} className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-green-600 focus:border-green-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-green-500 dark:focus:border-green-500" placeholder="class 1" required />
-                </div>
-                <div className="col-span-2">
-                  <label for="price" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Medium</label>
-                  <input type="text" value={medium} onChange={e => setMedium(e.target.value)} className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-green-600 focus:border-green-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-green-500 dark:focus:border-green-500" placeholder="দাখিল" required />
-                </div>
-                <div className="col-span-2">
-                  <label for="price" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Version</label>
-                  <input type="text" value={version} onChange={e => setVersion(e.target.value)} className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-green-600 focus:border-green-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-green-500 dark:focus:border-green-500" placeholder="চাকমা" required />
-                </div>
-                <div className="col-span-2">
-                  <label for="price" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Book name</label>
-                  <input type="text" value={bookName} onChange={e => setBookName(e.target.value)} className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-green-600 focus:border-green-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-green-500 dark:focus:border-green-500" placeholder="আমার বাংলা বই" required />
-                </div>
-                {/* <div className="col-span-2 sm:col-span-1">
-                  <label for="category" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Enter batch:</label>
-
-                  <select
-                    value={batchName}
-                    onChange={(e) => setBatchName(e.target.value)}
-                    className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-green-500 focus:border-green-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-green-500 dark:focus:border-green-500"
-                  >
-                    <option value="">Select a Batch</option>
-                  </select>
-                </div> */}
+      <div className="flex relative m-auto justify-center self-center p-4 w-full max-w-lg max-h-full">
+        <div className="relative bg-white rounded-lg shadow dark:bg-gray-700 w-full">
+          <div className="flex items-center justify-between p-4 md:p-5 border-b rounded-t dark:border-gray-600">
+            <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Create New Book</h3>
+            <button type="button" onClick={() => setExamModalOpen(false)} className="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white">
+              <svg className="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
+                <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6" />
+              </svg>
+              <span className="sr-only">Close</span>
+            </button>
+          </div>
+          <div className="p-4 md:p-5">
+            <div className="grid gap-4 mb-4 grid-cols-2">
+              <div className="col-span-2">
+                <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Year</label>
+                <select value={year} onChange={e => setYear(e.target.value)} className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:text-white">
+                  <option value="">Select a Year</option>
+                  {years.map(y => <option key={y._id} value={y.year}>{y.year}</option>)}
+                </select>
               </div>
-              <button type="submit" onClick={createBook} className="text-white inline-flex items-center bg-green-700 hover:bg-green-800 focus:ring-4 focus:outline-none focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800">
-                <svg className="me-1 -ms-1 w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z" clip-rule="evenodd"></path></svg>
-                Entry
-              </button>
+              <div className="col-span-2">
+                <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Class</label>
+                <select value={className} onChange={e => setClassName(e.target.value)} className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:text-white">
+                  <option value="">Select a Class</option>
+                  {classeNames.map(c => <option key={c._id} value={c.className}>{c.className}</option>)}
+                </select>
+              </div>
+              <div className="col-span-2">
+                <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Medium</label>
+                <select value={medium} onChange={e => setMedium(e.target.value)} className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:text-white">
+                  <option value="">Select a Medium</option>
+                  {mediums.map(m => <option key={m._id} value={m.medium}>{m.medium}</option>)}
+                </select>
+              </div>
+              <div className="col-span-2">
+                <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Version</label>
+                <select value={version} onChange={e => setVersion(e.target.value)} className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:text-white">
+                  <option value="">Select a Version</option>
+                  {versions.map(v => <option key={v._id} value={v.version}>{v.version}</option>)}
+                </select>
+              </div>
+              <div className="col-span-2">
+                <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Book Name</label>
+                <input type="text" value={bookName} onChange={e => setBookName(e.target.value)} className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:text-white" placeholder="আমার বাংলা বই" required />
+              </div>
             </div>
+            <button type="submit" onClick={createBook} className="text-white inline-flex items-center bg-green-700 hover:bg-green-800 focus:ring-4 focus:outline-none focus:ring-green-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-green-600 dark:hover:bg-green-700">
+              <svg className="me-1 -ms-1 w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                <path fillRule="evenodd" d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z" clipRule="evenodd"></path>
+              </svg>
+              Entry
+            </button>
           </div>
         </div>
       </div>
+    </div>
+
+
       {/* Delete Manager Modal */}
       <div className={`fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full ${deleteModalOpen ? '' : 'hidden'}`}>
         <div className="flex relative m-auto justify-center self-center p-4 w-full max-w-md max-h-full">
